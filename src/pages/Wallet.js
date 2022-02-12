@@ -2,24 +2,49 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
-import { currencyThunk } from '../actions';
+import { currencyThunk, expensesAction } from '../actions';
+
+const defaultValues = {
+  value: '',
+  description: '',
+  currency: 'USD',
+  method: 'Dinheiro',
+  tag: 'Alimentação',
+};
 
 class Wallet extends React.Component {
   constructor() {
     super();
     this.state = {
-      value: '',
-      description: '',
-      currency: '',
-      method: '',
-      tag: '',
+      value: defaultValues.value,
+      description: defaultValues.description,
+      currency: defaultValues.currency,
+      method: defaultValues.method,
+      tag: defaultValues.tag,
+      id: 0,
     };
     this.handleChange = this.handleChange.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
     const { currenciesProp } = this.props;
     currenciesProp();
+  }
+
+  handleClick(event) {
+    event.preventDefault();
+    const { id } = this.state;
+    const { expensesProp } = this.props;
+    expensesProp(this.state);
+    this.setState({
+      id: id + 1,
+      value: defaultValues.value,
+      description: defaultValues.description,
+      currency: defaultValues.currency,
+      method: defaultValues.method,
+      tag: defaultValues.tag,
+    });
   }
 
   handleChange({ target: { name, value } }) {
@@ -38,7 +63,7 @@ class Wallet extends React.Component {
     } = this.state;
 
     const { currencies } = this.props;
-    console.log(currencies);
+
     return (
       <>
         <Header />
@@ -114,6 +139,7 @@ class Wallet extends React.Component {
             </select>
             <button
               type="submit"
+              onClick={ this.handleClick }
             >
               Adicionar despesa
             </button>
@@ -127,14 +153,17 @@ class Wallet extends React.Component {
 Wallet.propTypes = {
   currenciesProp: PropTypes.func,
   currencies: PropTypes.arrayOf(PropTypes.string),
+  expenses: PropTypes.arrayOf(PropTypes.string),
 }.isRequired;
 
 const mapStateToProps = (state) => ({
+  expenses: state.wallet.expenses,
   currencies: state.wallet.currencies,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   currenciesProp: () => dispatch(currencyThunk()),
+  expensesProp: (payload) => dispatch(expensesAction(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Wallet);
