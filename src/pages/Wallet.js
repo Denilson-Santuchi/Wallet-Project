@@ -25,13 +25,17 @@ class Wallet extends React.Component {
       tag: defaultValues.tag,
       id: 0,
       exchangeRates: defaultValues.exchangeRates,
+      coins: [],
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
-    currencyApi().then((data) => this.setState({ exchangeRates: data }));
+    currencyApi().then((data) => {
+      delete data.USDT;
+      this.setState({ exchangeRates: data, coins: Object.keys(data) });
+    });
   }
 
   handleClick(event) {
@@ -47,7 +51,6 @@ class Wallet extends React.Component {
       currency: defaultValues.currency,
       method: defaultValues.method,
       tag: defaultValues.tag,
-      // exchangeRates: defaultValues.exchangeRates,
     });
   }
 
@@ -64,9 +67,8 @@ class Wallet extends React.Component {
       currency,
       method,
       tag,
+      coins,
     } = this.state;
-
-    const { currencies } = this.props;
 
     return (
       <>
@@ -103,9 +105,10 @@ class Wallet extends React.Component {
               name="currency"
               onChange={ this.handleChange }
             >
+              {console.log(coins)}
               {
-                currencies.map((moeda, index) => (
-                  <option key={ index } value={ moeda } data-testid={ moeda }>
+                coins.map((moeda) => (
+                  <option key={ moeda } value={ moeda } data-testid={ moeda }>
                     {moeda}
                   </option>
                 ))
