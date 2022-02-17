@@ -19,7 +19,6 @@ class Header extends Component {
 
   render() {
     const { userEmail } = this.props;
-    console.log(expenses);
     return (
       <header>
         <h3 data-testid="email-field">
@@ -37,7 +36,7 @@ class Header extends Component {
 
 Header.propTypes = {
   userEmail: PropTypes.string.isRequired,
-  expenses: PropTypes.arrayOf(PropTypes.string).isRequired,
+  expenses: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 const mapStateToProps = (state) => ({

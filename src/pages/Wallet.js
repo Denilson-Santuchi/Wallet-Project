@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import { currencyThunk, expensesAction } from '../actions';
+import currencyApi from '../services/currencyApi';
 
 const defaultValues = {
   value: '',
@@ -10,6 +11,7 @@ const defaultValues = {
   currency: 'USD',
   method: 'Dinheiro',
   tag: 'Alimentação',
+  exchangeRates: [],
 };
 
 class Wallet extends React.Component {
@@ -22,20 +24,21 @@ class Wallet extends React.Component {
       method: defaultValues.method,
       tag: defaultValues.tag,
       id: 0,
+      exchangeRates: defaultValues.exchangeRates,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
-    const { currenciesProp } = this.props;
-    currenciesProp();
+    currencyApi().then((data) => this.setState({ exchangeRates: data }));
   }
 
   handleClick(event) {
     event.preventDefault();
     const { id } = this.state;
-    const { expensesProp } = this.props;
+    const { expensesProp, currenciesProp } = this.props;
+    currenciesProp();
     expensesProp(this.state);
     this.setState({
       id: id + 1,
@@ -44,6 +47,7 @@ class Wallet extends React.Component {
       currency: defaultValues.currency,
       method: defaultValues.method,
       tag: defaultValues.tag,
+      // exchangeRates: defaultValues.exchangeRates,
     });
   }
 
