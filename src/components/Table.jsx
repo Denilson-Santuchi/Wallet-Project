@@ -1,8 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { deleteButton } from '../actions';
 
 class Table extends Component {
+  handleClick = (value) => {
+    const { dispatch, expenses } = this.props;
+    const filter = expenses.filter((element) => (
+      element.id !== value
+    ));
+    dispatch((deleteButton(filter)));
+  }
+
   render() {
     const { expenses } = this.props;
     return (
