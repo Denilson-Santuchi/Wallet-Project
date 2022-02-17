@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import { currencyThunk, expensesAction } from '../actions';
 import currencyApi from '../services/currencyApi';
+import Table from '../components/Table';
 
 const defaultValues = {
   value: '',
@@ -105,7 +106,6 @@ class Wallet extends React.Component {
               name="currency"
               onChange={ this.handleChange }
             >
-              {console.log(coins)}
               {
                 coins.map((moeda) => (
                   <option key={ moeda } value={ moeda } data-testid={ moeda }>
@@ -152,6 +152,7 @@ class Wallet extends React.Component {
             </button>
           </label>
         </form>
+        <Table />
       </>
     );
   }
